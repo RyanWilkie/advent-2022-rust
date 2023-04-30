@@ -1,4 +1,4 @@
-use std::{ collections::{ HashMap, HashSet }, hash::Hash };
+use std::collections::HashMap;
 
 fn main() {
     // day_one(3);
@@ -43,32 +43,35 @@ fn day_one(top_elf_count: i32) {
 
 fn day_two() {
     let mut total_score = 0;
-    // Rock, A, X
-    // Paper, B, Y
-    // Scissors, C, Z
+    // Rock, A, 1
+    // Paper, B, 2
+    // Scissors, C, 3
+    // Win, Z
+    // Draw, Y
+    // Lose, X
     let matched_attacks = HashMap::from([
         (
             "A",
             HashMap::from([
                 ("X", 3),
-                ("Y", 6),
-                ("Z", 0),
+                ("Y", 1),
+                ("Z", 2),
             ]),
         ),
         (
             "B",
             HashMap::from([
-                ("X", 0),
-                ("Y", 3),
-                ("Z", 6),
+                ("X", 1),
+                ("Y", 2),
+                ("Z", 3),
             ]),
         ),
         (
             "C",
             HashMap::from([
-                ("X", 6),
-                ("Y", 0),
-                ("Z", 3),
+                ("X", 2),
+                ("Y", 3),
+                ("Z", 1),
             ]),
         ),
     ]);
@@ -87,13 +90,13 @@ fn day_two() {
 
         match my_attack {
             "X" => {
-                total_score += 1;
+                total_score += 0;
             }
             "Y" => {
-                total_score += 2;
+                total_score += 3;
             }
             "Z" => {
-                total_score += 3;
+                total_score += 6;
             }
             &_ => todo!(),
         }
