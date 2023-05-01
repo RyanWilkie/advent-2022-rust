@@ -125,28 +125,55 @@ fn day_two() {
 fn day_three() {
     let file = std::fs::read_to_string("src/inputs/day_three").unwrap();
     let letters = String::from_utf8((b'a'..=b'z').chain(b'A'..=b'Z').collect()).unwrap();
+    let mut previous_lines = Vec::with_capacity(2);
     let mut total_priority = 0;
 
-    file.lines().for_each(|x| {
-        let (left_compartment, right_compartment) = x.split_at(x.len() / 2);
-        let mut matched_char = '\0';
-        left_compartment
-            .chars()
-            .into_iter()
-            .for_each(|x| {
-                if right_compartment.find(x).is_some() {
-                    matched_char = x;
-                }
-            });
+    file.lines()
+        .enumerate()
+        .for_each(|(idx, x)| {
+            if (idx + 1) % 3 != 0 {
+                previous_lines.push(x);
+            } else {
+                let mut matched_char = '\0';
+                let mut first_match = vec![];
+                let mut second_match = vec![];
 
-        match letters.find(matched_char) {
-            Some(number) => {
-                // plus one because index starts at 0, priority starts at 1
-                total_priority += number + 1;
+                x.chars()
+                    .into_iter()
+                    .for_each(|x| {
+                        previous_lines
+                            .iter()
+                            .enumerate()
+                            .for_each(|(idx, y)| {
+                                if y.find(x).is_some() {
+                                    if idx == 0 {
+                                        first_match.push(x)
+                                    } else {
+                                        second_match.push(x)
+                                    }
+                                }
+                            });
+                    });
+
+                first_match.iter().for_each(|x| {
+                    if second_match.contains(x) {
+                        matched_char = *x;
+                    }
+                });
+
+                match letters.find(matched_char) {
+                    Some(number) => {
+                        // plus one because index starts at 0, priority starts at 1
+                        total_priority += number + 1;
+                    }
+                    None => println!("Couldn't find letter"),
+                }
+
+                // Remove previous lines
+                previous_lines.pop();
+                previous_lines.pop();
             }
-            None => println!("Couldn't find letter"),
-        }
-    });
+        });
 
     println!("{}", total_priority);
 }
