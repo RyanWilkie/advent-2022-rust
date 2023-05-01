@@ -1,12 +1,17 @@
 use std::collections::HashMap;
 
 fn main() {
-    // day_one(3);
-    day_two();
+    let curr_day: u32 = 3;
+    match curr_day {
+        1 => day_one(3),
+        2 => day_two(),
+        3 => day_three(),
+        _ => println!("Day not implemented"),
+    }
 }
 
-fn day_one(top_elf_count: i32) {
-    let mut elves = Vec::new();
+fn day_one(top_elf_count: u32) {
+    let mut elves: Vec<u32> = Vec::new();
     let file = std::fs::read_to_string("src/inputs/day_one").unwrap();
 
     elves.push(0);
@@ -14,7 +19,7 @@ fn day_one(top_elf_count: i32) {
         if x == "" {
             elves.push(0);
         } else {
-            let num_x = match x.parse::<i32>() {
+            let num_x = match x.parse::<u32>() {
                 Ok(number) => number,
                 Err(..) => 0,
             };
@@ -29,7 +34,7 @@ fn day_one(top_elf_count: i32) {
 
     elves.sort();
 
-    let mut total_calories = 0;
+    let mut total_calories: u32 = 0;
     for _n in 1..=top_elf_count {
         let val = match elves.pop() {
             Some(number) => number,
@@ -42,7 +47,7 @@ fn day_one(top_elf_count: i32) {
 }
 
 fn day_two() {
-    let mut total_score = 0;
+    let mut total_score: u32 = 0;
     // Rock, A, 1
     // Paper, B, 2
     // Scissors, C, 3
@@ -115,4 +120,33 @@ fn day_two() {
     });
 
     println!("My score is {}", total_score);
+}
+
+fn day_three() {
+    let file = std::fs::read_to_string("src/inputs/day_three").unwrap();
+    let letters = String::from_utf8((b'a'..=b'z').chain(b'A'..=b'Z').collect()).unwrap();
+    let mut total_priority = 0;
+
+    file.lines().for_each(|x| {
+        let (left_compartment, right_compartment) = x.split_at(x.len() / 2);
+        let mut matched_char = '\0';
+        left_compartment
+            .chars()
+            .into_iter()
+            .for_each(|x| {
+                if right_compartment.find(x).is_some() {
+                    matched_char = x;
+                }
+            });
+
+        match letters.find(matched_char) {
+            Some(number) => {
+                // plus one because index starts at 0, priority starts at 1
+                total_priority += number + 1;
+            }
+            None => println!("Couldn't find letter"),
+        }
+    });
+
+    println!("{}", total_priority);
 }
